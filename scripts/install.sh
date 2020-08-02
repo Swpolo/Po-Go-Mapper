@@ -3,10 +3,15 @@
 SCRIPT=$(readlink -f "$0")
 # Absolute path this script is in, thus /home/user/bin
 SCRIPTPATH=$(dirname "$SCRIPT")
-cd $SCRIPTPATH
+ROOTPATH=$SCRIPTPATH/..
+cd $ROOTPATH
 
-# Create bin folder
+# Create folders
+rm -rf bin
 mkdir bin
+
+rm -rf tmp
+mkdir tmp
 
 # Generate image-reader binaries
 cd image-reader
@@ -15,8 +20,10 @@ mkdir build
 cd build
 cmake ..
 cmake --build .
-mv image-reader $SCRIPTPATH/bin
-rm -rf $SCRIPTPATH/image-reader/build
+mv image-reader $ROOTPATH/bin
+rm -rf $ROOTPATH/image-reader/build
 
-cd $SCRIPTPATH
+# Generate database docker image
+cd $ROOTPATH/database
+./install-server.sh
 

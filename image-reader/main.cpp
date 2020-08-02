@@ -42,15 +42,6 @@ int main(int argc, char** argv )
     }
     Mat src, gray, roi, binary;
     
-    // Terrible solution to determine the ROI
-    // Must be improved before release
-    unordered_map<string, Rect> rects;
-    rects["1080x1920"] = Rect(250, 150, 650, 140); 
-    rects["2208x1242"] = Rect(250, 170, 650, 120);
-    rects["2220x1080"] = Rect(250, 150, 650, 140);
-    rects["2880x1440"] = Rect(350, 200, 850, 140);
-
-
     String imageName(argv[1]); // by default
     src = curlImg(argv[1], 10);
     // imread(samples::findFile(imageName), IMREAD_COLOR); // Load an image
@@ -60,8 +51,18 @@ int main(int argc, char** argv )
         return -1;
     }
     cvtColor( src, gray, COLOR_BGR2GRAY ); // Convert the image to Gray
-    String taille = to_string(src.size().height) + String("x") + to_string(src.size().width);
-    roi = Mat(gray, rects[taille]);
+
+    // Temporary (and oddly successful) solution for determining the ROI
+    // Values are based on a 1080x1920 image for the proper ROI
+    // They are then normalized to the current image size
+    // Only work for portrait mode, will definitly fail for tablets
+    Rect rect_roi = Rect(
+        250 * src.size().width / 1080,
+        150 * src.size().height / 1920,
+        650 * src.size().width / 1080,    
+        120 * src.size().height / 1920
+    );
+    roi = Mat(gray, rect_roi);
     threshold(roi, binary, 210, 255, THRESH_BINARY); 
     binary = ~binary;
 
