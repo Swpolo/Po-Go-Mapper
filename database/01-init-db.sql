@@ -1,0 +1,34 @@
+CREATE DATABASE PoGoMapper;
+USE PoGoMapper;
+CREATE TABLE POI
+(
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(40) NOT NULL,
+    longitude DOUBLE NOT NULL,
+    latitude DOUBLE NOT NULL
+);
+
+CREATE TABLE Chats
+(
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(40) NOT NULL,
+    longitude DOUBLE,
+    latitude DOUBLE
+);
+
+CREATE TABLE Entries
+(
+    chat INTEGER NOT NULL,
+    poi INTEGER NOT NULL,
+    timestamp DOUBLE,
+
+    FOREIGN KEY (chat)
+        REFERENCES Chats(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (poi)
+        REFERENCES POI(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
